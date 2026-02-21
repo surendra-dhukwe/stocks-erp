@@ -1,0 +1,227 @@
+/* ================= GLOBAL ================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background: linear-gradient(135deg,#141e30,#243b55);
+  color:white;
+  padding:30px;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Smooth Page Fade */
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+/* ================= HEADINGS ================= */
+h2{
+  text-align:center;
+  font-size:32px;
+  margin-bottom:25px;
+  text-transform:uppercase;
+  letter-spacing:3px;
+  background: linear-gradient(90deg,#00f2fe,#4facfe);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  position:relative;
+}
+
+h2::after{
+  content:"";
+  width:80px;
+  height:4px;
+  background:#4facfe;
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:-8px;
+  border-radius:5px;
+  box-shadow:0 0 10px #4facfe;
+}
+
+/* ================= LOGIN ================= */
+.login-box{
+  width:320px;
+  margin:80px auto;
+  padding:30px;
+  border-radius:15px;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(10px);
+  box-shadow:0 10px 25px rgba(0,0,0,0.3);
+  text-align:center;
+  animation: slideDown 0.6s ease;
+}
+
+.login-box input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border:none;
+  border-radius:8px;
+}
+
+.login-box button{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#00c6ff;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.login-box button:hover{
+  background:#0072ff;
+  transform:scale(1.05);
+}
+
+/* ================= DASHBOARD ================= */
+.stock-menu{
+  width:350px;
+  margin:auto;
+  padding:25px;
+  border-radius:15px;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(10px);
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+.stock-menu button{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:none;
+  border-radius:8px;
+  background:#ffffff;
+  color:#243b55;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.stock-menu button:hover{
+  background:#00f2fe;
+  color:black;
+  transform:scale(1.05);
+}
+
+.options{
+  animation: slideDown 0.3s ease-in-out;
+}
+
+/* ================= FORM INPUTS ================= */
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border:none;
+  border-radius:8px;
+  outline:none;
+  font-size:14px;
+}
+
+textarea{
+  resize:none;
+  height:70px;
+}
+
+/* ================= BUTTONS ================= */
+button{
+  padding:10px 18px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+  margin:10px 5px;
+  transition:0.3s;
+}
+
+button:hover{
+  transform:scale(1.05);
+}
+
+button[onclick="addRow()"]{
+  background:#28a745;
+  color:white;
+}
+
+button[onclick="saveTransaction()"]{
+  background:#ffc107;
+  color:black;
+}
+
+button[onclick="downloadExcel()"],
+button[onclick="downloadFinalStock()"]{
+  background:#ff5722;
+  color:white;
+}
+
+/* ================= TABLE ================= */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+  background:white;
+  color:black;
+  border-radius:10px;
+  overflow:hidden;
+  animation: slideUp 0.5s ease;
+}
+
+th{
+  background:#243b55;
+  color:white;
+  padding:10px;
+}
+
+td{
+  padding:8px;
+  text-align:center;
+}
+
+tr:nth-child(even){
+  background:#f2f2f2;
+}
+
+tfoot{
+  background:#ddd;
+  font-weight:bold;
+}
+
+/* Negative Stock */
+.negative{
+  color:red;
+  font-weight:bold;
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes slideDown{
+  from{
+    opacity:0;
+    transform:translateY(-20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes slideUp{
+  from{
+    opacity:0;
+    transform:translateY(30px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}

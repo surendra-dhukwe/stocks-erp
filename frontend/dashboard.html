@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stock ERP Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h2>Stock ERP Dashboard</h2>
+
+<div class="stock-menu">
+  <button onclick="toggleOptions('stock1')">Stock 1</button>
+  <div id="stock1-options" class="options" style="display:none;">
+    <button onclick="openPage('dispatch','stock1')">Dispatch</button>
+    <button onclick="openPage('receive','stock1')">Receiving</button>
+  </div>
+
+  <button onclick="toggleOptions('stock2')">Stock 2</button>
+  <div id="stock2-options" class="options" style="display:none;">
+    <button onclick="openPage('dispatch','stock2')">Dispatch</button>
+    <button onclick="openPage('receive','stock2')">Receiving</button>
+  </div>
+</div>
+
+<button onclick="downloadFinalStock()">Download Final Stock Excel</button>
+
+<script>
+function toggleOptions(stockId){
+  const el = document.getElementById(stockId+'-options');
+  if(el.style.display === 'none'){
+    el.style.display = 'block';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+// Open page
+function openPage(type, stock){
+  // Save stock type in localStorage
+  localStorage.setItem('stockType', stock);
+  
+  if(type === 'dispatch'){
+    window.location.href = 'dispatch.html';
+  } else if(type === 'receive'){
+    window.location.href = 'receive.html';
+  }
+}
+
+function downloadFinalStock(){
+    window.location.href = "http://localhost:3000/final-stock/download";
+}
+</script>
+
+</body>
+</html>
