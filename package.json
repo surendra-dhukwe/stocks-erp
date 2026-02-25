@@ -15,12 +15,14 @@
     "passport-google-oauth20": "^2.0.0",
     "xlsx": "^0.18.5"
   },
+
   "name": "stocks",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"node server.js"
   },
   "keywords": [],
   "author": "",
