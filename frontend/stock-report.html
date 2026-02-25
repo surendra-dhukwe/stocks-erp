@@ -1,42 +1,264 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Stock Report</title>
-<link rel="stylesheet" href="css/style.css">
+<title>Stock Transactions Report</title>
+
+<style>
+
+/* PAGE */
+body{
+font-family:Arial;
+background:#f4f6f9;
+text-align:center;
+margin:0;
+}
+
+/* HEADING */
+
+h2{
+background:#2c3e50;
+color:white;
+padding:15px;
+margin:0;
+letter-spacing:2px;
+}
+
+/* SEARCH */
+
+.searchBox{
+margin:20px;
+}
+
+.searchBox input{
+padding:10px;
+width:320px;
+font-size:16px;
+border-radius:5px;
+border:1px solid gray;
+}
+
+/* TABLE */
+
+table{
+margin:auto;
+border-collapse:collapse;
+width:95%;
+background:white;
+box-shadow:0px 0px 10px #ccc;
+}
+
+th{
+background:#34495e;
+color:white;
+padding:12px;
+cursor:pointer;
+}
+
+td{
+padding:10px;
+border-bottom:1px solid #ddd;
+}
+
+/* HOVER */
+
+tr:hover{
+background:#f2f2f2;
+}
+
+/* DISPATCH RED */
+
+.dispatch{
+color:red;
+font-weight:bold;
+}
+
+/* RECEIVE GREEN */
+
+.receive{
+color:green;
+font-weight:bold;
+}
+
+/* ANIMATION */
+
+table{
+animation:fade 1s;
+}
+
+@keyframes fade{
+from{opacity:0}
+to{opacity:1}
+}
+
+</style>
+
 </head>
+
 <body>
 
-<h2>Stock Report</h2>
+
+<h2>Stock Transactions Report</h2>
+
+
+<div class="searchBox">
+
+<input type="text"
+id="searchInput"
+placeholder="Search Code, Name, Type and Date"
+onkeyup="filterTable()">
+
+</div>
+
 
 <table id="reportTable">
+
 <thead>
+
 <tr>
-<th>Code</th>
-<th>Name</th>
-<th>Stock Type</th>
-<th>Bags</th>
+
+<th onclick="sortTable(0)">Code</th>
+
+<th onclick="sortTable(1)">Name</th>
+
+<th onclick="sortTable(2)">Quantity</th>
+
+<th onclick="sortTable(3)">Type</th>
+
+<th onclick="sortTable(4)">Date</th>
+
 </tr>
+
 </thead>
-<tbody></tbody>
+
+<tbody>
+
+</tbody>
+
 </table>
 
+
+
 <script>
-fetch("http://localhost:3000/products/stock")
-.then(res => res.json())
-.then(data => {
-  const table = document.querySelector("#reportTable tbody");
-  data.forEach(item => {
-    const row = table.insertRow();
-    row.innerHTML = `
-      <td>${item.code}</td>
-      <td>${item.name}</td>
-      <td>${item.stock_type}</td>
-      <td class="${item.current_bags < 0 ? 'negative':''}">
-        ${item.current_bags}
-      </td>
-    `;
-  });
+
+
+/* =============================
+LOAD DATA WHEN PAGE OPEN
+============================= */
+
+window.onload = function(){
+
+fetch("http://localhost:3000/transactions")
+
+.then(res=>res.json())
+
+.then(data=>{
+
+const table=document.querySelector("#reportTable tbody");
+
+table.innerHTML="";
+
+data.forEach(item=>{
+
+const row=table.insertRow();
+
+row.innerHTML=`
+
+<td>${item.code}</td>
+
+<td>${item.name}</td>
+
+<td>${item.total_quantity}</td>
+
+<td class="${item.type=='dispatch'?'dispatch':'receive'}">
+
+${item.type}
+
+</td>
+
+<td>
+
+${new Date(item.entry_date).toLocaleString()}
+
+</td>
+
+`;
+
 });
+
+});
+
+};
+
+
+/* =============================
+SEARCH FILTER
+============================= */
+
+function filterTable(){
+
+const input = document.getElementById("searchInput");
+const filter = input.value.toLowerCase();
+
+const rows = document.querySelectorAll("#reportTable tbody tr");
+
+rows.forEach(row=>{
+
+const code = row.cells[0].innerText.toLowerCase();
+const name = row.cells[1].innerText.toLowerCase();
+const type = row.cells[2].innerText.toLowerCase();   // Dispatch / Receive
+const date = row.cells[3].innerText.toLowerCase();   // Date column
+
+if(
+   code.includes(filter) ||
+   name.includes(filter) ||
+   type.includes(filter) ||
+   date.includes(filter)
+){
+
+row.style.display="";
+
+}
+else{
+
+row.style.display="none";
+
+}
+
+});
+
+}
+
+
+
+/* =============================
+SORT
+============================= */
+
+function sortTable(n){
+
+const table=document.getElementById("reportTable");
+
+let rows=Array.from(table.rows).slice(1);
+
+let asc=true;
+
+rows.sort((a,b)=>{
+
+let x=a.cells[n].innerText;
+
+let y=b.cells[n].innerText;
+
+return asc
+? x.localeCompare(y,undefined,{numeric:true})
+: y.localeCompare(x,undefined,{numeric:true});
+
+});
+
+rows.forEach(row=>table.appendChild(row));
+
+}
+
+
 </script>
 
 </body>

@@ -1,3 +1,54 @@
+const express = require("express");
+const db = require("./db");
+
+const app = express();
+
+app.use(express.json());
+
+
+// Final Stock API
+app.get("/products/stock", async (req, res) => {
+
+try {
+
+const [rows] = await db.query(`
+
+SELECT
+code,
+MAX(name) AS name,
+
+SUM(
+CASE
+WHEN type = 'received' THEN total_quantity
+WHEN type = 'dispatch' THEN -total_quantity
+ELSE 0
+END
+) AS final_stock
+
+FROM transactions
+
+GROUP BY code
+
+ORDER BY code ASC
+
+`);
+
+res.json(rows);
+
+}
+
+catch(err){
+
+console.log(err);
+
+res.status(500).json({
+message:"Database Error"
+});
+
+}
+
+});
+
 let products = [];
 
 // Load products first
@@ -99,33 +150,71 @@ function updateTotals(){
 
 // Save transaction
 function saveTransaction(){
-    const stockType = localStorage.getItem('stockType')||'stock1';
-    const type = stockType==='stock1'?'receive':'receive';
-    const items=[];
-    document.querySelectorAll("#itemTable tbody tr").forEach(row=>{
-        const code=row.cells[0].querySelector("input").value;
-        const name=row.cells[1].querySelector("input").value;
-        const bags=row.cells[2].querySelector("input").value;
-        const quantity=row.cells[3].querySelector("input").value;
-        const totalQty=row.cells[4].querySelector("input").value;
-        if(code) items.push({code,name,bags,quantity,totalQty});
-    });
 
-    fetch("http://localhost:3000/transactions",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-            party_name:document.getElementById("party").value,
-            invoice_number:document.getElementById("invoice").value,
-            note:document.getElementById("note").value,
-            stock_id:stockType,
-            type:type,
-            items:items
-        })
-    }).then(res=>res.json()).then(data=>{
-        alert("Transaction Saved!");
-        location.reload();
-    });
+let type = localStorage.getItem("type");
+
+// Agar null aaye to fallback
+if(!type){
+
+if(window.location.pathname.includes("dispatch")){
+type="dispatch";
+}
+else{
+type="receive";
+}
+
+}
+
+console.log("TYPE =",type);
+
+const items=[];
+
+document.querySelectorAll("#itemTable tbody tr").forEach(row=>{
+
+const code=row.cells[0].querySelector("input").value;
+const name=row.cells[1].querySelector("input").value;
+const totalQty=row.cells[4].querySelector("input").value;
+
+if(code){
+
+items.push({
+code,
+name,
+totalQty
+});
+
+}
+
+});
+
+
+fetch("http://localhost:3000/transactions",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body: JSON.stringify({
+
+type:type,
+items:items
+
+})
+
+})
+
+.then(res=>res.json())
+
+.then(data=>{
+
+alert(type + " Saved Successfully");
+
+location.reload();
+
+});
+
 }
 
 // Excel download
