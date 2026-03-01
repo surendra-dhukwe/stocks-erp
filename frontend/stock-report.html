@@ -2,109 +2,19 @@
 <html>
 <head>
 <title>Stock Transactions Report</title>
-
-<style>
-
-/* PAGE */
-body{
-font-family:Arial;
-background:#f4f6f9;
-text-align:center;
-margin:0;
-}
-
-/* HEADING */
-
-h2{
-background:#2c3e50;
-color:white;
-padding:15px;
-margin:0;
-letter-spacing:2px;
-}
-
-/* SEARCH */
-
-.searchBox{
-margin:20px;
-}
-
-.searchBox input{
-padding:10px;
-width:320px;
-font-size:16px;
-border-radius:5px;
-border:1px solid gray;
-}
-
-/* TABLE */
-
-table{
-margin:auto;
-border-collapse:collapse;
-width:95%;
-background:white;
-box-shadow:0px 0px 10px #ccc;
-}
-
-th{
-background:#34495e;
-color:white;
-padding:12px;
-cursor:pointer;
-}
-
-td{
-padding:10px;
-border-bottom:1px solid #ddd;
-}
-
-/* HOVER */
-
-tr:hover{
-background:#f2f2f2;
-}
-
-/* DISPATCH RED */
-
-.dispatch{
-color:red;
-font-weight:bold;
-}
-
-/* RECEIVE GREEN */
-
-.receive{
-color:green;
-font-weight:bold;
-}
-
-/* ANIMATION */
-
-table{
-animation:fade 1s;
-}
-
-@keyframes fade{
-from{opacity:0}
-to{opacity:1}
-}
-
-</style>
+<link rel="stylesheet" href="css/style.css">
 
 </head>
 
 <body>
 
-
 <h2>Stock Transactions Report</h2>
-
 
 <div class="searchBox">
 
 <input type="text"
 id="searchInput"
-placeholder="Search Code, Name, Type and Date"
+placeholder="Search Code, Name, Types and Date"
 onkeyup="filterTable()">
 
 </div>
@@ -117,13 +27,9 @@ onkeyup="filterTable()">
 <tr>
 
 <th onclick="sortTable(0)">Code</th>
-
 <th onclick="sortTable(1)">Name</th>
-
 <th onclick="sortTable(2)">Quantity</th>
-
-<th onclick="sortTable(3)">Type</th>
-
+<th onclick="sortTable(3)">Types</th>
 <th onclick="sortTable(4)">Date</th>
 
 </tr>
@@ -140,14 +46,11 @@ onkeyup="filterTable()">
 
 <script>
 
+/* LOAD DATA */
 
-/* =============================
-LOAD DATA WHEN PAGE OPEN
-============================= */
+window.onload=function(){
 
-window.onload = function(){
-
-fetch("http://localhost:3000/transactions")
+fetch("http://localhost:3000/all-transactions")
 
 .then(res=>res.json())
 
@@ -190,29 +93,37 @@ ${new Date(item.entry_date).toLocaleString()}
 };
 
 
-/* =============================
-SEARCH FILTER
-============================= */
+
+/* SEARCH */
 
 function filterTable(){
 
-const input = document.getElementById("searchInput");
-const filter = input.value.toLowerCase();
+const input=document.getElementById("searchInput");
 
-const rows = document.querySelectorAll("#reportTable tbody tr");
+const filter=input.value.toLowerCase();
+
+const rows=document.querySelectorAll("#reportTable tbody tr");
 
 rows.forEach(row=>{
 
-const code = row.cells[0].innerText.toLowerCase();
-const name = row.cells[1].innerText.toLowerCase();
-const type = row.cells[2].innerText.toLowerCase();   // Dispatch / Receive
-const date = row.cells[3].innerText.toLowerCase();   // Date column
+const code=row.cells[0].innerText.toLowerCase();
+const name=row.cells[1].innerText.toLowerCase();
+const qty=row.cells[2].innerText.toLowerCase();
+const type=row.cells[3].innerText.toLowerCase();
+const date=row.cells[4].innerText.toLowerCase();
 
 if(
-   code.includes(filter) ||
-   name.includes(filter) ||
-   type.includes(filter) ||
-   date.includes(filter)
+
+code.includes(filter) ||
+
+name.includes(filter) ||
+
+qty.includes(filter) ||
+
+type.includes(filter) ||
+
+date.includes(filter)
+
 ){
 
 row.style.display="";
@@ -230,9 +141,7 @@ row.style.display="none";
 
 
 
-/* =============================
-SORT
-============================= */
+/* SORT */
 
 function sortTable(n){
 
@@ -240,17 +149,12 @@ const table=document.getElementById("reportTable");
 
 let rows=Array.from(table.rows).slice(1);
 
-let asc=true;
-
 rows.sort((a,b)=>{
 
 let x=a.cells[n].innerText;
-
 let y=b.cells[n].innerText;
 
-return asc
-? x.localeCompare(y,undefined,{numeric:true})
-: y.localeCompare(x,undefined,{numeric:true});
+return x.localeCompare(y,undefined,{numeric:true});
 
 });
 

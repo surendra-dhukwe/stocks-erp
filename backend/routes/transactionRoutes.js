@@ -3,11 +3,13 @@ const router = express.Router();
 
 const db = require('../db');
 
+
 router.post("/", async (req,res)=>{
 
 try{
 
 const { type, items } = req.body;
+
 
 for(const item of items){
 
@@ -27,6 +29,7 @@ type
 );
 
 }
+
 
 res.json({
 
@@ -49,5 +52,6 @@ message:"Database Error"
 }
 
 });
+
 
 module.exports = router;

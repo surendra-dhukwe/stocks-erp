@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Products List</title>
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+
+
+<h2>Products List</h2>
+
+
+
+<!-- ADD ITEM -->
+
+<div class="addBox">
+
+<h3>Add Item</h3>
+
+<input id="code" placeholder="Code">
+
+<input id="name" placeholder="Name">
+
+<button onclick="addProduct()">
+Add Item
+</button>
+
+</div>
+
+
+
+<!-- SEARCH -->
+
+<div class="searchBox">
+
+<input
+id="search"
+placeholder="Search Code or Name"
+onkeyup="searchProduct()"
+>
+
+</div>
+
+
+
+<!-- TABLE -->
+
+<table id="table">
+
+<thead>
+
+<tr>
+
+<th>Code</th>
+
+<th>Name</th>
+
+<th>Stock</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+</tbody>
+
+</table>
+
+
+
+
+<script>
+
+
+let allProducts=[];
+
+
+/* LOAD PRODUCTS */
+
+function loadProducts(){
+
+fetch("http://localhost:3000/products-stock")
+
+.then(res=>res.json())
+
+.then(data=>{
+
+allProducts=data;
+
+showTable(data);
+
+})
+
+.catch(err=>{
+
+alert("Server Not Running");
+
+});
+
+}
+
+
+
+/* SHOW TABLE */
+
+function showTable(data){
+
+const table=document.querySelector("#table tbody");
+
+table.innerHTML="";
+
+
+data.forEach(p=>{
+
+const row=table.insertRow();
+
+row.innerHTML=`
+
+<td>${p.code}</td>
+
+<td>${p.name}</td>
+
+<td class="${p.stock>=0?'stockGreen':'stockRed'}">
+
+${p.stock}
+
+</td>
+
+`;
+
+});
+
+}
+
+
+
+/* SEARCH */
+
+function searchProduct(){
+
+const text=document.getElementById("search").value.toLowerCase();
+
+
+const filtered=allProducts.filter(p=>
+
+p.code.toLowerCase().includes(text)
+
+||
+
+p.name.toLowerCase().includes(text)
+
+);
+
+
+showTable(filtered);
+
+}
+
+
+
+/* ADD PRODUCT */
+
+function addProduct(){
+
+const code=document.getElementById("code").value;
+
+const name=document.getElementById("name").value;
+
+
+fetch("http://localhost:3000/products",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+code:code,
+name:name
+
+})
+
+})
+
+.then(res=>res.json())
+
+.then(()=>{
+
+alert("Product Added");
+
+loadProducts();
+
+});
+
+}
+
+
+
+loadProducts();
+
+
+</script>
+
+</body>
+
+</html>

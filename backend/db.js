@@ -5,7 +5,10 @@ const db = mysql.createPool({
 host:'localhost',
 user:'root',
 password:'surendra@123',
-database:'stock'
+database:'stock',
+
+waitForConnections:true,
+connectionLimit:10
 
 });
 

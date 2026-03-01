@@ -1,22 +1,70 @@
 const express = require('express');
 const router = express.Router();
+
 const db = require('../db');
 
-// Get all products
-router.get('/', (req,res)=>{
-    db.query("SELECT * FROM products", (err,result)=>{
-        if(err) return res.status(500).send(err);
-        res.json(result);
-    });
+
+/* GET ALL PRODUCTS */
+
+router.get('/', async (req,res)=>{
+
+try{
+
+const [rows] = await db.query(
+
+"SELECT code,name FROM products_master ORDER BY code"
+
+);
+
+res.json(rows);
+
+}
+
+catch(err){
+
+console.log(err);
+
+res.status(500).send("Database Error");
+
+}
+
 });
 
-// Add product
-router.post('/', (req,res)=>{
-    const {code,name} = req.body;
-    db.query("INSERT INTO products(code,name) VALUES(?,?)",[code,name], (err,result)=>{
-        if(err) return res.status(500).send(err);
-        res.json({message:"Product added"});
-    });
+
+
+/* ADD PRODUCT */
+
+router.post('/', async (req,res)=>{
+
+try{
+
+const {code,name} = req.body;
+
+await db.query(
+
+"INSERT INTO products_master(code,name) VALUES(?,?)",
+
+[code,name]
+
+);
+
+res.json({
+
+message:"Product Added"
+
 });
+
+}
+
+catch(err){
+
+console.log(err);
+
+res.status(500).send("Insert Error");
+
+}
+
+});
+
 
 module.exports = router;
