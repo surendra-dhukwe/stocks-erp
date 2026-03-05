@@ -190,6 +190,14 @@ res.status(500).send("Download Error");
 
 });
 
+const path = require("path");
+
+app.use(express.static(path.join(__dirname, "../frontend")));
+
+app.get("/", (req,res)=>{
+res.sendFile(path.join(__dirname,"../frontend/login.html"));
+});
+
 /* ================= TEST ================= */
 
 app.get('/', (req,res)=>{
